@@ -11,7 +11,7 @@
 		(cons (car lst) (nthcar (- n 1) (cdr lst)))))
 
 (define (poly_add pola polb)
-	(if (> (length pola) (length polb))
+	(if (>= (length pola) (length polb))
 		(append (map (lambda (x y) (+ x y)) (nthcar (length polb) pola) polb) (nthcdr (length polb) pola))
 		(poly_add polb pola)))
 
@@ -25,9 +25,9 @@
 
 (define (poly_mul pola polb)
 	(define flen (- (+ (length pola) (length polb)) 1))
-	(if (= (length polb) 1)
-		(multil (car polb) pola)
-		(poly_add (padr (- flen (length (multil (car polb) pola))) (multil (car polb) pola)) (cons 0 (poly_mul pola (cdr polb))))))
+	(if (= (length polb) 0)
+		`()
+		(poly_add (multil (car polb) pola) (cons 0 (poly_mul pola (cdr polb))))))
 		
 
 (define (poly_mod rpola rpolb)
@@ -45,28 +45,17 @@
 		(list)
 		(append (genlist (- num 1)) (list num))))
 
-(define (padl n l)
-	(if (= n 0)
-		l
-		(padl (- n 1) (cons 0 l))))
-
+;insert n zeroes to the right of list
 (define (padr n l)
 	(if (= n 0)
 		l
 		(padr (- n 1) (append l `(0)))))
 
+;multiply elements in l by a
 (define (multil a l)
 	(if (null? l)
 		`()
 		(cons (* a (car l)) (multil a (cdr l)))))
 
-(define fata `(3 0 4 0 5))
-(define fatb `(4 3 0 6))
-
-
-;(poly_add fata fatb)
-;(poly_add fatb fata)
-
-;(poly_sub fata fatb)
-;(poly_sub fatb fata)
-;(set-working-directory-pathname! "/Users/christophertse/scheme/")
+(define fata `(1 2 3))
+(define fatb `(3 4 5 6))
